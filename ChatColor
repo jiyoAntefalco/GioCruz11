@@ -1,0 +1,49 @@
+local Colors = {
+	{196, 40, 28},
+	{13, 105, 172},
+	{38, 70, 45},
+	{107, 49, 124},
+	{218, 133, 65},
+	{244, 205, 47},
+	{232, 186, 200},
+	{214, 196, 154},
+}
+
+local function GetNameValue(pName)
+	local value = 0
+	for index = 1, #pName do 
+		local cValue = string.byte(string.sub(pName, index, index))
+		local reverseIndex = #pName - index + 1
+		if #pName%2 == 1 then 
+			reverseIndex = reverseIndex - 1			
+		end
+		if reverseIndex%4 >= 2 then 
+			cValue = -cValue 			
+		end 
+		value = value + cValue 
+	end 
+	return value%8
+end
+
+local Digit = 3
+
+local function RGB(Name, Type)
+	local GetColor = Colors[GetNameValue(Name) + 1]
+	if (GetColor) then
+		local String = {
+			tostring(GetColor[Digit - 2]), 
+			tostring(GetColor[Digit - 1]), 
+			tostring(GetColor[Digit])
+		}
+		if Type:lower() == ('ToString'):lower() then
+			return tostring(String[Digit - 2]..','..String[Digit - 1]..','..String[Digit])
+		elseif Type:lower() == ('ToNumber'):lower() then
+			return String[Digit - 2], String[Digit - 1], String[Digit]
+		else
+			assert(Type == ('ToString'):lower() or Type == ('ToNumber'):lower(), 'Second argument must be a type: (ToString, ToNumber)')
+		end
+	end
+	return '0,0,0'
+end
+
+return RGB
